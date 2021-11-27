@@ -3,7 +3,7 @@
 
 #include <openpose/core/common.hpp>
 #include <openpose/net/net.hpp>
-
+#include <caffe/caffe.hpp>
 namespace op
 {
     class OP_API NetCaffe : public Net
@@ -19,7 +19,7 @@ namespace op
         void forwardPass(const Array<float>& inputNetData) const;
 
         std::shared_ptr<ArrayCpuGpu<float>> getOutputBlobArray() const;
-
+        caffe::Blob *getOutputLayer() const; 
     private:
         // PIMPL idiom
         // http://www.cppsamples.com/common-tasks/pimpl.html

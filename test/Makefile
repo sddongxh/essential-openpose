@@ -1,5 +1,6 @@
 CC = g++
-CPPFLAGS = -g -Wall -O3  -MMD  -std=c++17
+CPPFLAGS = -g -Wall -O3  -MMD  -std=c++17 
+CPPFLAGS += -DUSE_CAFFE
 
 TARGET = test.exe
 

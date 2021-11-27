@@ -137,4 +137,7 @@ namespace op
             return nullptr;
         }
     }
+    caffe::Blob *NetCaffe::getOutputLayer() const {
+        return upImpl->spOutputBlob.get(); 
+    } 
 }
