@@ -18,7 +18,7 @@ using namespace op;
 string caffeProto = "../models/pose/coco/pose_deploy_linevec.prototxt";
 string caffeTrainedModel = "../models/pose/coco/pose_iter_440000.caffemodel";
 // string image_path = "COCO_val2014_000000000192.jpg";
-string  image_path = "/home/xihua/Pictures/10294980_10152127690781045_570701756731952736_o.jpg";
+string image_path = "/home/xihua/Pictures/10294980_10152127690781045_570701756731952736_o.jpg";
 // std::vector<Array<float>> createArray(
 //     const Matrix &inputData, const std::vector<double> &scaleInputToNetInputs,
 //     const std::vector<Point<int>> &netInputSizes)
@@ -53,11 +53,15 @@ int main(int argc, char **argv)
     float scale = 0;
     Mat resized = getImage(raw_image, baseSize, &scale);
     auto inputData = cvMatToArray(resized, 1);
+    for (int i = 0; i < 10; i++) {
+        cout << inputData.at(i) << " " ;
+    }
+    return 0; 
     // auto inputData = preprocess(cvImageToProcess, baseSize);
     auto start = std::chrono::steady_clock::now();
-
-    BlobData *nms_out = createBlob_local(1, 56, POSE_MAX_PEOPLE + 1, 3);
-    BlobData *input = createBlob_local(1, 57, baseSize.height, baseSize.width);
+    int N = 57;
+    BlobData *nms_out = createBlob_local(1, N -1, POSE_MAX_PEOPLE + 1, 3);
+    BlobData *input = createBlob_local(1, N, baseSize.height, baseSize.width);
 
     for (int i = 0; i < 1; i++)
     {
@@ -70,7 +74,6 @@ int main(int argc, char **argv)
         const float *net_output_data_begin = net_output_blob->cpu_data<float>();
 
         cout << "N = " << net_output_blob->num() << "x" << net_output_blob->channels() << "x" << net_output_blob->height() << "x" << net_output_blob->width() << endl;
-
         BlobData *net_output = createBlob_local(net_output_blob->num(), net_output_blob->channels(), net_output_blob->height(), net_output_blob->width());
         memcpy(net_output->list, net_output_data_begin, net_output_blob->count() * sizeof(float));
 

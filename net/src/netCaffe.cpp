@@ -3,9 +3,33 @@
 #include <atomic>
 #include <caffe/net.hpp>
 #include <spdlog/spdlog.h>
+#include <openpose/core/common.hpp>
+// #include <openpose/utilities/fileSystem.hpp>
+// #include <openpose/utilities/standard.hpp>
+#include <filesystem>
+namespace fs = std::filesystem;
 
-#include <openpose/utilities/fileSystem.hpp>
-#include <openpose/utilities/standard.hpp>
+template <typename T>
+bool vectorsAreEqual(const std::vector<T> &vectorA, const std::vector<T> &vectorB)
+{
+    try
+    {
+        if (vectorA.size() != vectorB.size())
+            return false;
+        else
+        {
+            for (auto i = 0u; i < vectorA.size(); i++)
+                if (vectorA[i] != vectorB[i])
+                    return false;
+            return true;
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << __LINE__ << __FUNCTION__ << __FILE__ << std::endl;
+        return false;
+    }
+}
 
 namespace op
 {
@@ -39,9 +63,9 @@ namespace op
                                           "\t\tRight example for the Windows portable binary: `cd {OpenPose_root_path}; bin/openpose.exe`\n"
                                           "\t\tWrong example for the Windows portable binary: `cd {OpenPose_root_path}/bin; openpose.exe`\n"
                                           "\t3. Using paths with spaces."};
-                if (!existFile(mCaffeProto))
+                if (!fs::exists(mCaffeProto))
                     spdlog::error("Prototxt file not found: {}{}{}{}{}", mCaffeProto, message, __LINE__, __FUNCTION__, __FILE__);
-                if (!existFile(mCaffeTrainedModel))
+                if (!fs::exists(mCaffeTrainedModel))
                     spdlog::error("Caffe trained model file not found: {}{}{}" + mCaffeTrainedModel + message,
                                   __LINE__, __FUNCTION__, __FILE__);
             }
@@ -137,7 +161,8 @@ namespace op
             return nullptr;
         }
     }
-    caffe::Blob *NetCaffe::getOutputLayer() const {
-        return upImpl->spOutputBlob.get(); 
-    } 
+    caffe::Blob *NetCaffe::getOutputLayer() const
+    {
+        return upImpl->spOutputBlob.get();
+    }
 }
